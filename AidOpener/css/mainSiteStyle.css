@@ -1,0 +1,444 @@
+
+body {
+    background-color: plum;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 13px;
+}
+
+
+strong {
+    color: red;
+}
+
+#bannerTop {
+    height: 20px;
+    background-color: plum;
+}
+
+.orgName {
+    padding-left: 10px;
+    padding-bottom: 0px;
+    color: #FFEEFF;
+    font-size: 140%;
+    margin: 0px;
+}
+
+
+#topMenu ul {
+    margin-right: -5px;
+}
+
+#topMenu li {
+    list-style: none;
+    float: right;
+    width: 150px;
+    background-color: #FFDDFF;
+    padding: 0px;
+    border-top: 1px solid plum;
+    border-bottom: 1px solid grey;
+    border-right: 1px solid grey;
+    text-align: center;
+    margin-right: 10px;
+    position: relative;
+    top: -3px;
+    left: 0px;
+}
+
+    #topMenu li ul {
+        margin-top: 12px;
+        position: absolute;
+        top: 12px;
+        left: -40px;
+        z-index: 10;
+        display: none;
+    }
+
+    #topMenu li:hover > ul {
+        display: block;
+    }
+
+
+#topMenu a {
+    color: purple;
+    text-decoration: none;
+    display: block;
+    margin: 5px;
+    outline: 0;
+    font-size: 90%;
+    margin: 3px;
+}
+
+#topMenu li ul li:hover {
+    background-color: white;
+}
+
+.pageTitle {
+    padding-left: 10px;
+    padding-bottom: 0px;
+    color: purple;
+    font-size: 300%;
+    margin: 0px;
+    margin-bottom: 5px;
+    padding-top: 0px;
+}
+
+    #middleColumn {
+        width: 350px;
+        margin-left:auto;
+        margin-right:auto;
+        background-color: white;
+        font-size:110%;
+        text-align:justify;
+    }
+
+
+
+.tabs {
+    width: 100%;
+    display: inline-block;
+}
+
+/*----- Tab Links -----*/
+/* Clearfix */
+.tab-links:after {
+    display: block;
+    clear: both;
+    content: '';
+}
+
+.tab-links li {
+    margin: 0px 5px;
+    float: right;
+    list-style: none;
+}
+
+ul.tab-links {
+    margin-bottom: 0;
+}
+
+.tab-links a {
+    outline: 0;
+    text-decoration: none;
+    margin-top: 6px;
+    padding: 9px 15px;
+    display: inline-block;
+    border-radius: 3px 3px 0px 0px;
+    background: #DDCCDD;
+    <!-- background: #FFE9FF; -->
+    font-size: 16px;
+    font-weight: 600;
+    color: #4c4c4c;
+    transition: all linear 0.15s;
+}
+
+    .tab-links a:hover {
+        background: #a7cce5;
+        text-decoration: none;
+    }
+
+li.active a, li.active a:hover {
+    background: #fff;
+    color: #4c4c4c;
+}
+
+
+/*----- Content of Tabs -----*/
+.tab-content {
+    padding-top: 15px;
+    border-radius: 3px;
+    /*box-shadow:-1px 1px 1px rgba(0,0,0,0.15);*/
+    background: #fff;
+}
+
+.tab {
+    display: none;
+}
+
+    .tab.active {
+        display: block;
+    }
+
+
+
+
+
+#rightColumn {
+    float: left;
+    width: 38%;
+    min-width: 200px;
+    margin-left: 1%;
+    margin-right: 1%;
+    background-color: plum;
+}
+
+#pageContent {
+    margin-top: 2px;
+}
+
+
+#leftColumn {
+    float: left;
+    width: 58%;
+    min-width: 400px;
+    margin-left: 1%;
+    margin-right: 1%;
+    background-color: plum;
+}
+
+.columnHeading {
+    background-color: purple;
+    color: white;
+    border-top: 15px plum solid;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.itemBoxRight {
+    margin-bottom: 10px;
+    background-color: snow;
+    box-shadow: inset 1px 1px 1px 1px #996699;
+    -webkit-box-shadow: inset 1px 1px 1px 1px #996699;
+    -moz-box-shadow: inset 1px 1px 1px 1px #996699;
+    -o-box-shadow: inset 1px 1px 1px 1px #996699;
+}
+
+.itemBoxLeft {
+    background-color: #FFDDFF;
+    margin-bottom: 10px;
+    overflow: hidden; /* this stops the floated Submit button floating outside the div area */
+    box-shadow: inset 1px 1px 1px 1px #996699;
+    -webkit-box-shadow: inset 1px 1px 1px 1px #996699;
+    -moz-box-shadow: inset 1px 1px 1px 1px #996699;
+    -o-box-shadow: inset 1px 1px 1px 1px #996699;
+}
+
+.tableSpaceDiv {
+    background-color: plum;
+    outline: none;
+    border-top: 15px plum solid;
+    border-left: 15px plum solid;
+}
+
+#idTableOutputSpace {
+    background-color: plum;
+    border-top: 15px plum solid;
+}
+
+#idUpperHorizontalShadowCaster {
+    height: 0px;
+    display: block;
+    box-shadow: 3px 3px 3px 1px #000000;
+    -webkit-box-shadow: 3px 3px 3px 1px #000000;
+    -moz-box-shadow: 3px 3px 3px 1px #000000;
+    -o-box-shadow: 3px 3px 3px 1px #000000;
+    position: absolute;
+    top: 142px;
+    left: 0px;
+    z-index: 1;
+}
+
+#idLowerHorizontalShadowCaster {
+    height: 0px;
+    display: block;
+    box-shadow: 3px -3px 3px 1px #000000;
+    -webkit-box-shadow: 3px -3px 3px 1px #000000;
+    -moz-box-shadow: 3px -3px 3px 1px #000000;
+    -o-box-shadow: 3px -3px 3px 1px #000000;
+    position: absolute;
+    top: 528px;
+    left: 0px;
+    z-index: 1;
+}
+
+#idLeftVerticalShadowCaster {
+    width: 0px;
+    height: 320px;
+    box-shadow: 3px 3px 3px 1px #000000;
+    -webkit-box-shadow: 3px 3px 3px 1px #000000;
+    -moz-box-shadow: 3px 3px 3px 1px #000000;
+    -o-box-shadow: 3px 3px 3px 1px #000000;
+    position: absolute;
+    top: 142px;
+    left: 0px;
+    z-index: 1;
+}
+
+#idRightVerticalShadowCaster {
+    width: 0px;
+    height: 320px;
+    box-shadow: 3px 3px 3px 1px #000000;
+    -webkit-box-shadow: 3px 3px 3px 1px #000000;
+    -moz-box-shadow: 3px 3px 3px 1px #000000;
+    -o-box-shadow: 3px 3px 3px 1px #000000;
+    position: absolute;
+    top: 142px;
+    z-index: 1;
+}
+
+#idRightVerticalBorder {
+    width: 3px;
+    height: 400px;
+    background-color: black;
+    display: block;
+    position: absolute;
+    top: 0px;
+    z-index: 1;
+}
+
+#idForHideableTextInColumnSelectorDataBox {
+    display: none;
+    float: left;
+    clear: right;
+}
+
+.padded {
+    padding: 15px;
+}
+
+.header {
+    font-weight: 700;
+    font-size: 130%;
+    margin-top: 5px;
+}
+
+.floatRight {
+    float: right;
+}
+
+.whiteBackground {
+    background-color: white;
+}
+
+.yellow {
+    background-color: lightblue;
+}
+
+.pinkOnWhite {
+    color: pink;
+    background-color: white;
+}
+
+.lightgrey {
+    color: lightgrey;
+    background-color: white;
+}
+
+.green {
+    color: green;
+    background-color: white;
+}
+
+.lighterPurple {
+    color: #CC00CC;
+}
+
+.buttonOff {
+    height: 24px;
+    border-radius: 6px;
+    background-color: white;
+    color: black;
+    margin-right: 10px;
+}
+
+.buttonOn {
+    height: 24px;
+    border-radius: 6px;
+    background-color: blue;
+    color: white;
+    margin-right: 10px;
+}
+
+
+.headCell {
+    border: 1px #666666 solid;
+    float: left;
+    height: 40px;
+}
+
+.bodyCell {
+    border: 1px #999999 solid;
+    float: left;
+    height: 60px;
+}
+
+    .bodyCell p {
+        margin: 0;
+        padding: 2px;
+    }
+
+#tableBlock {
+}
+
+#tableHeadingsBlock {
+    color: white;
+    background-color: #997799;
+    font-weight: 300;
+    border: 1px solid black;
+    border-top: 2px solid black;
+    vertical-align: top;
+    overflow: hidden;
+    /*display:block;*/
+    position: relative;
+    font-size: 11px;
+}
+
+#tableBodyBlock {
+    position: relative; /* this is included in order to make the pseudo-element box-shadow work */
+    color: black;
+    background-color: #998899;
+    font-weight: 300;
+    border: 1px solid black;
+    border-bottom: 3px solid #777777;
+    vertical-align: top;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+
+@media screen and (max-height: 800px) { /* needs to be elaborated to cater for different screen sizes*/
+    #tableBodyBlock {
+        height: 320px; /*need to align this with shadowcasters */
+    }
+
+    #tab1 {
+        min-height: 900px; /* to pre-empt the kick-in of the vertical scrollbar*/
+    }
+
+    .tableWidth {
+    }
+    /* this is used as a hook for jQuery operation */
+
+
+
+    .classForTableHeadTop {
+    }
+    /* probably not needed */
+    .classForTableHead2 {
+    }
+    /*probably not needed*/
+
+
+
+    .interpretiveFieldStyle {
+        color: blue;
+        background-color: pink;
+    }
+
+    .floatRight {
+        float: right;
+    }
+
+    /*----- Tabs -----*/
+
+    #tab1 {
+        background-color: plum;
+    }
+
+    #tab2 {
+        position: relative; /* this should enable the shadow caster elements to be positioned 'absolute'ly relative to tab2 */
+    }
+
+    .select2dropdown {
+        font-size: 90%;
+    }
+}
