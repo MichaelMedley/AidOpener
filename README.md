@@ -1,2 +1,2 @@
-# tabulator
-This page can make a table out of XML-formatted IATI activity data: for instance a file published by an aid agency about its activities in a particular country.
+# AidOpener
+The AidOpener website provides information and tools to promote the transparency of international aid. The tools aim to make more accessible and useful the data generated through IATI (the International Aid Transparency Initiative)
