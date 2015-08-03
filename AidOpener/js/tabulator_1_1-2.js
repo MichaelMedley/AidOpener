@@ -179,17 +179,6 @@ var xmlDoc = "";
 //PRIMARY FUNCTION
 //This is triggered when page loads (see body) 
 
-function getElementsFromNodeList(nodelist) {
-    var elements = [];
-    for (var i = 0; i < nodelist.length; i++) {
-        if (nodelist[i].nodeType === 1) {
-            elements.push(nodelist[i]);
-        }
-    }
-    return elements;
-}
-
-
 function fnIncludeBannerAndCreateTabs() {
 
     $(document).ready(function () { $("#idBannerMenuInclude").load("../../banner-menu_include.html"); });
@@ -225,51 +214,14 @@ function fnBuildSourceDataSelectionUI() {
 
     arrayOfDatasets = fnPopulateArrayFromCsvFile("arrayOfDatasets.csv");
 
-    /*
-    //Combine pre-loaded arrays to make an enriched array of the available datasets
-    arrayDatasetsEnriched[0] = ["blank","Code &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Publisher agency &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp Recipient country or other topic" ];
-    for (d=1; d < arrayDatasets.length; d++) {
-        arrayDatasetsEnriched[d] = [ arrayDatasets[d], arrayDatasets[d] ];
-        chopPoint = arrayDatasetsEnriched[d][0].indexOf("-");
-        firstPart = arrayDatasetsEnriched[d][0].substr(0, chopPoint);
-        secondPart = arrayDatasetsEnriched[d][0].substr(chopPoint);
-        //alert(arrayDatasets[d] + ", " + firstPart + ", " + secondPart);
-        
-        for (p=0; p<arrayPublishers.length; p++) {
-            chopPoint2 = arrayPublishers[p][1].indexOf(" (");
-            publisherName = arrayPublishers[p][1].substr(0, chopPoint2);
-            //alert(publisherName);
-            if (firstPart == arrayPublishers[p][0]){
-                arrayDatasetsEnriched[d][1] += " &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; " + publisherName;
-                break;
-            }
-        }
-        countryFound = "no";
-        for (c=0; c < arrayCountries.length; c++) {
-            chopPoint2 = arrayCountries[c][1].indexOf(":");
-            countryName = arrayCountries[c][1].substr(0, chopPoint2);
-                
-            if (secondPart == "-" + arrayCountries[c][0].toLowerCase()){
-                arrayDatasetsEnriched[d][1] += " &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; " + countryName;
-                countryFound = "yes";
-                break;
-            }
-        }
-        if (countryFound != "yes"){
-            arrayDatasetsEnriched[d][1] += " &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; " + arrayDatasetsEnriched[d][0].substr(chopPoint+1);
-        }
-        
-    }
-*/
-
-    //Provide introductory text
+	//introductory text
     introString = "<div class='padded' style='font-size:105%'><p>This page can make a table out of XML-formatted IATI activity data: for instance a file published by an aid agency about its activities in a particular country.</p>";
     introString += "<p>Begin by choosing a source of data.</p>";
-    introString += "<p style='font-size:90%'>Warning: the Tabulator has been developed using the Firefox browser. It does not work in some other browsers.</p>";
     introString += "</div>";
     outputSpace = document.getElementById("idRightItem1");
     outputSpace.innerHTML = introString;
-
+	
+	//buttons for choosing the type of the source data
     resultString = "<div id='idSelectSourceData' class='padded'>";
     resultString += "<p class='header'>Choice of source data</p>";
     resultString += "<button id='idSettingsButtonG3N1' type='button' class='buttonOn' style='float:left; height:40px' onclick='fnHideOrShowDivOnButtonClick(\"3\",  \"1\")'>" + arrayButtons[3][1][1] + "</button>";
@@ -277,68 +229,66 @@ function fnBuildSourceDataSelectionUI() {
     resultString += "<button id='idSettingsButtonG3N3' type='button' class='buttonOff' style='float:left; height:40px; margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"3\", \"3\")'>" + arrayButtons[3][3][1] + "</button>";
     resultString += "<button id='idSettingsButtonG3N4' type='button' class='buttonOff' style='float:left; height:40px; margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"3\", \"4\")'>" + arrayButtons[3][4][1] + "</button>";
 
-    resultString += "<div id='idSelectionOfCurrentIatiDataset'  style='float:left; clear:left; margin-bottom:10px'>";
-    resultString += "<form action=''><fieldset>";
-    resultString += "<select id='idSelectDatasetToFetchFromIatiDatastore' style='float:left; margin-top: 15px; margin-bottom:10px; width:450px; font-size:90%'>";	//NB if we don't specify an absolute width, the box may become too wide when a long option is selected
-
-    resultString += "<option >Type a search term. Then click on preferred file.</option>";
-    for (x = 0; x < arrayOfDatasets.length; x++) {
-        resultString += "<option value='" + arrayOfDatasets[x][0] + "'>" + arrayOfDatasets[x][2] + "&nbsp;|&nbsp;" + arrayOfDatasets[x][1] + "&nbsp;|&nbsp;" + arrayOfDatasets[x][3] + "</option>";
-    }
-
-    resultString += "</select>";
-    resultString += "<input type='button' class='floatRight buttonOff' style='clear:right;margin-left:20px;margin-top:17px' onclick='fetchType=\"dataset\"; fnAnalyzeMetadata()' value='Submit'/>"
-    resultString += "</fieldset></form>";
-    resultString += "</div>";
-
-    resultString += "<div id='idQueryingTheDatastore' style='float:left; margin-top: 15px; margin-bottom:10px'>";
-    resultString += "<form action=''><fieldset>";
-
-    resultString += "<select id='idSelectRecipientCountry' style='float:left; clear:left; margin-bottom:10px; width:450px; font-size:90%'>"; //NB if we don't specify an absolute width, the box may become too wide when a long option is selected	
-    resultString += "<option>Select a recipient country.</option>";
-    for (x = 0; x < arrayCountries.length; x++) {
-        resultString += "<option value='" + arrayCountries[x][0] + "'>" + arrayCountries[x][1] + "</option>";
-    }
-    resultString += "</select>";
-    resultString += "<div style='float:left; clear:both; margin-bottom:10px; font-size:90%'>Optionally, click ";
-    resultString += "<input type='button' class='buttonOff'  onclick='fetchType=\"query to get reporting orgs\"; fnAnalyzeMetadata()' value='Submit'/>"
-    resultString += "here to compile an appropriate list of options in the next search box (i.e. only those organizations which have reported aid for the selected country). Warning: the process of refreshing the list can take some minutes. </div>";
-    resultString += "<select id='idSelectReportingOrg' style='float:left; clear:left; margin-bottom:10px; width:450px; font-size:90%'>"; //NB if we don't specify an absolute width, the box may become too wide when a long option is selected		
-    resultString += "<option>Select a reporting organization.</option>";
-    for (x = 0; x < arrayOfReportingOrgs.length; x++) {
-        resultString += "<option value='" + arrayOfReportingOrgs[x][0] + "'>" + arrayOfReportingOrgs[x][0] + " : " + arrayOfReportingOrgs[x][1] + " (" + arrayOfReportingOrgs[x][2] + ")</option>";
-    }
-    resultString += "</select>";
-
-    resultString += "<input type='button' class='floatRight buttonOff' onclick='fetchType=\"query by country and org\"; fnAnalyzeMetadata()' value='Query by country and org'/>"
-    resultString += "</fieldset></form>";
-    resultString += "</div>";
-
+	//choosing from a dataset from the IATI Datastore
+	    resultString += "<div id='idSelectionOfCurrentIatiDataset'  style='float:left; clear:left; margin-bottom:10px'>";
+	    resultString += "<form action=''><fieldset>";
+	    resultString += "<select id='idSelectDatasetToFetchFromIatiDatastore' style='float:left; margin-top: 15px; margin-bottom:10px; width:450px; font-size:90%'>";	//NB if we don't specify an absolute width, the box may become too wide when a long option is selected
+	    resultString += "<option >Type a search term. Then click on preferred file.</option>";
+	    for (x = 0; x < arrayOfDatasets.length; x++) {
+	        resultString += "<option value='" + arrayOfDatasets[x][0] + "'>" + arrayOfDatasets[x][2] + "&nbsp;|&nbsp;" + arrayOfDatasets[x][1] + "&nbsp;|&nbsp;" + arrayOfDatasets[x][3] + "</option>";
+	    }
+		resultString += "</select>";
+	    resultString += "<input type='button' class='floatRight buttonOff' style='clear:right;margin-left:20px;margin-top:17px' onclick='fetchType=\"dataset\"; fnAnalyzeMetadata()' value='Submit'/>"
+	    resultString += "</fieldset></form>";
+	    resultString += "</div>";
+	
+	//choosing a stock file
+	    resultString += "<div id='idSelectionOfStockFile' style='float:left; clear:left; margin-bottom:10px'>";
+	    resultString += "<form action=''><fieldset>";
+	    resultString += "<div style='clear:left; padding-left:10px; font-size:90%'>Stock files are files stored on AidOpener's server, rather than fetched fresh from the IATI datastore. They may be useful as quick samples or for testing purposes.<br><br></div>";
+	    resultString += "<select id='idSelectStockFile' style='width:100%; padding-left:10px; float:right; margin-bottom:10px '>";
+	    resultString += "<option value='ADD-KH-activity.xml'>ADD file for Cambodia, May 2015</option>";
+		resultString += "<option value='dfid-guy-activity.xml'>DFID file for Guyana, April 2015</option>";
+	    resultString += "<option value='EU_SS-2.xml'>EU file for South Sudan, December 2014</option>";
+	    resultString += "<option value='DE-1_TH.xml'>German Ministry of Economic Cooperation file for Thailand, April 2015</option>";
+	    resultString += "<input type='button' class='floatRight buttonOff' onclick='fnLoadLocalXmlFile()' value = 'Submit' /";
+	    resultString += "</select>";
+	    resultString += "</fieldset></form>";
+	    resultString += "</div>";
+	
+	//choosing by inputting text
+	    resultString += "<div id='idInputtingOfFileAsText' style='float:left; clear:left; margin-bottom:10px '>";
+	    resultString += "<form action='' style='width:100%'><fieldset style='width:100%'>";
+	    resultString += "<div style='clear:left; padding-left:10px; font-size:90%'>You can input an XML file by copying and pasting its text into the box below. Then click the 'Submit' button.<br><br></div>";
+	    resultString += "<textarea id='idInputXmlText' rows='5' cols='50' style='float:left; max-width:90%' >Paste over this</textarea>";
+	    resultString += "<input type='button' class='floatRight buttonOff' style='clear:left' onclick='fnCreateXmlObjectFromTextInput()' value = 'Submit' /";
+		resultString += "</fieldset></form>";
+	    resultString += "</div>";
 
 
-    resultString += "<div id='idSelectionOfStockFile' style='float:left; clear:left; margin-bottom:10px'>";
-    resultString += "<form action=''><fieldset>";
-    resultString += "<div style='clear:left; padding-left:10px; font-size:90%'>Stock files are files stored on AidOpener's server, rather than fetched fresh from the IATI datastore. They may be useful as quick samples or for testing purposes.<br><br></div>";
-    resultString += "<select id='idSelectStockFile' style='width:100%; padding-left:10px; float:right; margin-bottom:10px '>";
-    resultString += "<option value='ADD-KH-activity.xml'>ADD file for Cambodia, May 2015</option>";
-
-    resultString += "<option value='dfid-guy-activity.xml'>DFID file for Guyana, April 2015</option>";
-    resultString += "<option value='EU_SS-2.xml'>EU file for South Sudan, December 2014</option>";
-    resultString += "<option value='DE-1_TH.xml'>German Ministry of Economic Cooperation file for Thailand, April 2015</option>";
-    resultString += "<input type='button' class='floatRight buttonOff' onclick='fnLoadLocalXmlFile()' value = 'Submit' /";
-    resultString += "</select>";
-    resultString += "</fieldset></form>";
-    resultString += "</div>";
-
-    resultString += "<div id='idInputtingOfFileAsText' style='float:left; clear:left; margin-bottom:10px '>";
-    resultString += "<form action='' style='width:100%'><fieldset style='width:100%'>";
-    resultString += "<div style='clear:left; padding-left:10px; font-size:90%'>You can input an XML file by copying and pasting its text into the box below. Then click the 'Submit' button.<br><br></div>";
-    resultString += "<textarea id='idInputXmlText' rows='5' cols='50' style='float:left; max-width:90%' >Paste over this</textarea>";
-    resultString += "<input type='button' class='floatRight buttonOff' style='clear:left' onclick='fnCreateXmlObjectFromTextInput()' value = 'Submit' /";
-
-    resultString += "</fieldset></form>";
-    resultString += "</div>";
-
+	//choosing by making a donor-recipient query from the IATI datastore
+	    resultString += "<div id='idQueryingTheDatastore' style='float:left; margin-top: 15px; margin-bottom:10px'>";
+	    resultString += "<form action=''><fieldset>";
+	
+	    resultString += "<select id='idSelectRecipientCountry' style='float:left; clear:left; margin-bottom:10px; width:450px; font-size:90%'>"; //NB if we don't specify an absolute width, the box may become too wide when a long option is selected	
+	    resultString += "<option>Select a recipient country.</option>";
+	    for (x = 0; x < arrayCountries.length; x++) {
+	        resultString += "<option value='" + arrayCountries[x][0] + "'>" + arrayCountries[x][1] + "</option>";
+	    }
+	    resultString += "</select>";
+	    resultString += "<div style='float:left; clear:both; margin-bottom:10px; font-size:90%'>Optionally, click ";
+	    resultString += "<input type='button' class='buttonOff'  onclick='fetchType=\"query to get reporting orgs\"; fnAnalyzeMetadata()' value='Submit'/>"
+	    resultString += "here to compile an appropriate list of options in the next search box (i.e. only those organizations which have reported aid for the selected country). Warning: the process of refreshing the list can take some minutes. </div>";
+	    resultString += "<select id='idSelectReportingOrg' style='float:left; clear:left; margin-bottom:10px; width:450px; font-size:90%'>"; //NB if we don't specify an absolute width, the box may become too wide when a long option is selected		
+	    resultString += "<option>Select a reporting organization.</option>";
+	    for (x = 0; x < arrayOfReportingOrgs.length; x++) {
+	        resultString += "<option value='" + arrayOfReportingOrgs[x][0] + "'>" + arrayOfReportingOrgs[x][0] + " : " + arrayOfReportingOrgs[x][1] + " (" + arrayOfReportingOrgs[x][2] + ")</option>";
+	    }
+	    resultString += "</select>";
+	
+	    resultString += "<input type='button' class='floatRight buttonOff' onclick='fetchType=\"query by country and org\"; fnAnalyzeMetadata()' value='Query by country and org'/>"
+	    resultString += "</fieldset></form>";
+	    resultString += "</div>";
 
 
     formOutputSpace = document.getElementById("idSpaceForSourceDataSelectionUI");
@@ -354,20 +304,15 @@ function fnBuildSourceDataSelectionUI() {
 
 }
 
-
 function fnRefreshReportingOrgsInUI() {
-
     var resultString = "<option>Select a reporting organization.</option>";
     for (x = 0; x < arrayOfReportingOrgsFresh.length; x++) {
         resultString += "<option value='" + arrayOfReportingOrgsFresh[x][0] + "'>" + arrayOfReportingOrgsFresh[x][0] + " : " + arrayOfReportingOrgsFresh[x][1] + " (" + arrayOfReportingOrgsFresh[x][2] + ")</option>";
     }
-
     document.getElementById("idSelectReportingOrg").innerHTML = resultString;
-
 }
 
 function fnLoadLocalXmlFile() {
-    var fileName = "";
     var fileName = document.getElementById("idSelectStockFile").value;
 
     if (window.XMLHttpRequest) {
@@ -399,25 +344,19 @@ function fnAnalyzeMetadata() {
     }
     
     if (FILE IS MISSING FROM DATASTORE){
-        SUGGEST THAT THE USER DOWNLOADS AND PASTES THE FILE MANUALLY
-        
+        SUGGEST THAT THE USER DOWNLOADS AND PASTES THE FILE MANUALLY  
     }
         
     */
     document.getElementById("idRightItem2").innerHTML = "";
     document.getElementById("idRightItem3").innerHTML = "";
-    arrayOfReportingOrgsFresh = [["Code", "Name", "Number of activity records"]];
     fnFetchXmlDataFromRemoteSite();
-
 }
 
 
 function fnCreateXmlObjectFromTextInput() {
-
-    var xmlText = document.getElementById("idInputXmlText").value;
-
-
-    var xmlTextMk2 = xmlText.replace(/iati-extra:version/g, "iati-extraVersion");
+	var xmlText = document.getElementById("idInputXmlText").value;
+	var xmlTextMk2 = xmlText.replace(/iati-extra:version/g, "iati-extraVersion");
     var xmlTextMk3 = xmlTextMk2.replace(/&/g, "&amp;");
 
     xmlText = xmlTextMk3;
@@ -444,9 +383,6 @@ function fnCreateXmlObjectFromTextInput() {
 
     xmlDoc = parseXml(xmlText);
 
-
-    //var xmlDoc = $.parseXML(xmlText);       //this jQuery way looks simpler than the above, but is said not to be so accurate
-
     if (xmlDoc.documentElement.nodeName == "parsererror") {
         alert("Can't parse this. It may be because of some unusual feature of the file which we haven't spotted and smoothed out. But please check these are full and proper XML file contents.");
     }
@@ -460,8 +396,8 @@ function fnCreateXmlObjectFromTextInput() {
     setTimeout(fnGetGoing, standardPauseTime);
 }
 
+
 function fnFetchXmlDataFromRemoteSite() {
-    var chopPoint = 0;
     var recipientCountryID = "";
     var dataset = "";
     var xhr = "";
@@ -494,12 +430,11 @@ function fnFetchXmlDataFromRemoteSite() {
     if (fetchType == "query by country and org") {
         recipientCountryID = document.getElementById("idSelectRecipientCountry").value;
         reportingOrgID = document.getElementById("idSelectReportingOrg").value;
-
         urlString = "http://datastore.iatistandard.org/api/1/access/activity.xml?recipient-country=" + recipientCountryID + "&reporting-org=" + reportingOrgID + "&offset=" + ((batchNo - 1) * standardBatchSize).toString() + "&limit=100";
     }
 
     reportString1 = "<div class='padded'>"
-    reportString1 += "<p>We have requested your data from the IATI Datastore:<p>";
+    reportString1 += "<p>We have requested your data from the IATI Datastore. It may take up to a minute to fetch. This is the source:<p>";
     reportString1 += "<p><a href='" + urlString + "' target='_blank'>" + urlString + "</a></p>";
     reportString1 += "<p>(Clicking the above hyperlink will open the source xml file in a new tab or window.)</p></div>";
     //reportString2 = "<div class='padded'><p>Fetching the data ...</p></div>";
@@ -559,14 +494,12 @@ function fnFetchXmlDataFromRemoteSite() {
             if (fetchType == "query to get reporting orgs") {
                 setTimeout(fnCompileArrayOfReportingOrgs, standardPauseTime);
             }
-            if (fetchType == "dataset") {
+            if (fetchType == "dataset" || fetchType == "query by country and org") {
 
                 setTimeout(fnGetGoing, standardPauseTime);
 
             }
-
-
-        }
+	    }
         else {
             locProgressReport2 = "<div class='padded'><p>The file contains no IATI activity records.</p>";
             if (fetchType == "dataset") {
@@ -586,7 +519,7 @@ function fnFetchXmlDataFromRemoteSite() {
 }
 
 
-function fnAbortFetch() {
+function fnAbortFetch() {    //does not seem to work
     batchNo = "0";
     urlString = "";
     xhr = null;
@@ -671,8 +604,6 @@ function fnGetGoing() {
     locProgressReport3 += "<p>The program is now converting the xml data into a JavaScript array.</p>";
     locProgressReport3 += "</div>";
 
-
-
     // set initial values for universal variables which are changed below (because the running of the script may be repeated without the page being reloaded)
     arrayBlankFields = [];
     arrayHomogenousFeatures = [];
@@ -724,16 +655,13 @@ function fnGetGoing() {
 
 
     for (attributeNo = 0; attributeNo < iatiActivities[0].attributes.length; attributeNo++) {
-
         if (iatiActivities[0].attributes[attributeNo].nodeName == "generated-datetime") {
             generatedDatetime = iatiActivities[0].attributes[attributeNo].nodeValue;
         }
         if (iatiActivities[0].attributes[attributeNo].nodeValue == "http://www.foreignassistance.gov/web/IATI/usg-extension") {
             reporter = "USA";
-
         }
     }
-
 
     arrayFeatures = fnPopulateArrayFromCsvFile("arrayFeatures.txt");
 
@@ -759,8 +687,7 @@ function fnGetGoing() {
            4 is for the number of hideable row-sections of cells (multiple uses of a tag) currently shown under a button cell. (This number is useful when hiding the cells)
            5 is for the cell (text) color (which is included among the 'style' attributes when the table is constructed)
            6 is for the cell border colour (which is included among the 'style' attributes when the table is constructed)
-           
-     
+    
        When a kind of special value is needed for each row rather than each cell...
        
    
@@ -1137,12 +1064,9 @@ function fnReportAndSubtractTheWidthOfColumnsWithHomogeneousValues() {
             }
         }
 
-
         if (homogeneityStatus == "homogeneous") {
-
             arrayHomogenousFeatures.push(featureNo);
             arrayFeatures[featureNo][2] = "homoYES";
-
         }
         if (homogeneityStatus == "homogeneous" || homogeneityStatus == "inapplicable") {
             homogeneousValue = arrayMaster[1][featureNo][0];
@@ -1162,10 +1086,7 @@ function fnReportAndSubtractTheWidthOfColumnsWithHomogeneousValues() {
             arrayFeatures[featureNo][2] = "homoNO";
             arrayFeatures[featureNo][5] = "showYes";
         }
-        //alert(featureNo);
     }
-
-
 
     htmlForListOfBlankFields += "</ul>";
     htmlForTableOfFieldsWithHamogenousNonblankValues += "</table>";
@@ -1177,9 +1098,7 @@ function fnReportAndSubtractTheWidthOfColumnsWithHomogeneousValues() {
     htmlForHomogeneityReport += ". To show/hide a list of these variables, click the button: <button id='idButtonForListOfHomogeneousFields' onclick='fnShowAndHideText(idButtonForListOfHomogeneousFields, \"idPositionOfListOfHomogeneousFields\", htmlForTableOfFieldsWithHamogenousNonblankValues)'>+</button></li>";
     htmlForHomogeneityReport += "<div id='idPositionOfListOfHomogeneousFields'></div>";
 
-
     setTimeout(fnAddButtonsToTableHeadingsForExpandableElements, standardPauseTime);
-
 }
 
 // Subsidiary function
@@ -1225,7 +1144,7 @@ function fnHideThisColumn(featureNo) {
     fnAdjustTableWidth();
 }
 
-/*Subsidiary function   //This functionality probably is not wanted and the routine would have to be revised anyway
+/*Subsidiary function   //This functionality probably is not wanted and the routine would have to be revised if it were
 function fnShowAndHideSubordinateColumns(heteroFeatureNo){
     var columnClass = "";
     var f= arrayHeterogeneousFeatures[heteroFeatureNo];
@@ -1302,6 +1221,31 @@ function fnCompileAndPrintTheInitialSummary() {
 
 
 //PRIMARY FUNCTION
+function fnCreateOrderingAndGroupingSelector() {
+    var orderingAndGroupingSelectionFormHtml = "";
+    var formOutputSpace;
+
+    orderingAndGroupingSelectionFormHtml = "<div class='padded'>";
+    orderingAndGroupingSelectionFormHtml += "<h4 class='header' style='float:left'>Row order and grouping</h4>";
+    orderingAndGroupingSelectionFormHtml += "<br><br><br>";
+    //orderingAndGroupingSelectionFormHtml += "<div style='display:block; border: 1px solid grey'";
+    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N1' type='button' class='floatLeft buttonOn' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"1\"); fnMakeArrayForReorderingArrayMaster(1, \"ascending\")'>" + arrayButtons[1][1][1] + "</button>";
+    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N2' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"2\"); fnMakeArrayForReorderingArrayMaster(13, \"ascending\")'>" + arrayButtons[1][2][1] + "</button>";
+    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N3' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"3\"); fnMakeArrayForReorderingArrayMaster(17, \"ascending\")'>" + arrayButtons[1][3][1] + "</button>";
+    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N4' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"4\"); fnMakeArrayForReorderingArrayMaster(188, \"ascending\")'>" + arrayButtons[1][4][1] + "</button>";
+    orderingAndGroupingSelectionFormHtml += " <span style='float:left; padding-top:4px; padding-right:10px; font-weight:800'>Quick options: </span>";
+
+    orderingAndGroupingSelectionFormHtml += "</div>";
+
+    formOutputSpace = document.getElementById("idSpaceForOrderingAndGroupingSelector");
+    formOutputSpace.innerHTML = orderingAndGroupingSelectionFormHtml;
+
+    setTimeout(fnGenerateColumnSelector, standardPauseTime);
+}
+
+
+
+//PRIMARY FUNCTION
 function fnGenerateColumnSelector() {
     var currentFeatureName = "";
     var labelText = "";
@@ -1356,10 +1300,10 @@ function fnGenerateColumnSelectorPart2(columnSelectionFormHtml) {
 
     //NB the next bit includes the default settings for when the table is first produced
     //setTimeout(fnHideOrShowDivOnButtonClick,standardPauseTime,"1", "2");
-    setTimeout(fnMakeArrayForReorderingArrayMaster, standardPauseTime, 13, "ascending");
     //setTimeout(fnHideOrShowDivOnButtonClick,standardPauseTime,"4", "1"); 
     setTimeout(fnColumnGroupSelect, standardPauseTime, 3, "defSelYES");
-    setTimeout(fnBuildAndOutputTheMainTable, standardPauseTime);
+    setTimeout(fnMakeArrayForReorderingArrayMaster, standardPauseTime, 13, "ascending");
+    
 }
 
 
@@ -1435,32 +1379,6 @@ function fnColumnGroupSelect(featureDimension, parameter) {
     }
 }
 
-
-//PRIMARY FUNCTION
-function fnCreateOrderingAndGroupingSelector() {
-    var orderingAndGroupingSelectionFormHtml = "";
-    var formOutputSpace;
-
-    orderingAndGroupingSelectionFormHtml = "<div class='padded'>";
-    orderingAndGroupingSelectionFormHtml += "<h4 class='header' style='float:left'>Row order and grouping</h4>";
-    orderingAndGroupingSelectionFormHtml += "<br><br><br>";
-    //orderingAndGroupingSelectionFormHtml += "<div style='display:block; border: 1px solid grey'";
-    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N1' type='button' class='floatLeft buttonOn' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"1\"); fnMakeArrayForReorderingArrayMaster(1, \"ascending\"); fnBuildAndOutputTheMainTable()'>" + arrayButtons[1][1][1] + "</button>";
-    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N2' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"2\"); fnMakeArrayForReorderingArrayMaster(13, \"ascending\"); fnBuildAndOutputTheMainTable()'>" + arrayButtons[1][2][1] + "</button>";
-    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N3' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"3\"); fnMakeArrayForReorderingArrayMaster(17, \"ascending\"); fnBuildAndOutputTheMainTable()'>" + arrayButtons[1][3][1] + "</button>";
-    orderingAndGroupingSelectionFormHtml += "<button id='idSettingsButtonG1N4' type='button' class='floatLeft buttonOff' style='margin-bottom:10px' onclick='fnHideOrShowDivOnButtonClick(\"1\",  \"4\"); fnMakeArrayForReorderingArrayMaster(188, \"ascending\"); fnBuildAndOutputTheMainTable()'>" + arrayButtons[1][4][1] + "</button>";
-    orderingAndGroupingSelectionFormHtml += " <span style='float:left; padding-top:4px; padding-right:10px; font-weight:800'>Quick options: </span>";
-
-    orderingAndGroupingSelectionFormHtml += "</div>";
-
-    formOutputSpace = document.getElementById("idSpaceForOrderingAndGroupingSelector");
-    formOutputSpace.innerHTML = orderingAndGroupingSelectionFormHtml;
-
-    setTimeout(fnGenerateColumnSelector, standardPauseTime);
-}
-
-
-
 //subsidiary function  			
 function fnMakeArrayForReorderingArrayMaster(keyFeatureNo, direction) {
     var arrayReorderPrincipalRows = [];
@@ -1521,6 +1439,7 @@ function fnMakeArrayForReorderingArrayMaster(keyFeatureNo, direction) {
         }
         principalRowNo = principalRowNo + noOfSubsidiaryRows + 1;
     }
+    setTimeout(fnBuildAndOutputTheMainTable, standardPauseTime);
 }
 
 
@@ -1725,6 +1644,20 @@ function fnHideSubsidiaryRows() {	       //perhaps this could/should be done by 
     });
     document.getElementById("idRightItem3").innerHTML = "<div class='padded'>Adjusting table width</div>";
     setTimeout(fnAdjustTableWidth, standardPauseTime);
+}
+
+
+
+
+//utility function
+function getElementsFromNodeList(nodelist) {
+    var elements = [];
+    for (var i = 0; i < nodelist.length; i++) {
+        if (nodelist[i].nodeType === 1) {
+            elements.push(nodelist[i]);
+        }
+    }
+    return elements;
 }
 
 //utility function
