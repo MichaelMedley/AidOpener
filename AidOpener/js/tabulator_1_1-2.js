@@ -1630,12 +1630,11 @@ function fnApplySpecialStyling() {
             }
         }
     }
-
-
-    document.getElementById("idRightItem3").innerHTML = "<div class='padded'>Hiding subsidiary rows</div>";
+	document.getElementById("idRightItem3").innerHTML = "<div class='padded'>Hiding subsidiary rows</div>";
     setTimeout(fnHideSubsidiaryRows, standardPauseTime);
 }
 
+//PRIMARY FUNCTION
 function fnHideSubsidiaryRows() {	       //perhaps this could/should be done by css rather than jQuery
     $(document).ready(function () {
         for (r = 0; r < arraySelectedRowNos.length; r++) {
@@ -1645,8 +1644,6 @@ function fnHideSubsidiaryRows() {	       //perhaps this could/should be done by 
     document.getElementById("idRightItem3").innerHTML = "<div class='padded'>Adjusting table width</div>";
     setTimeout(fnAdjustTableWidth, standardPauseTime);
 }
-
-
 
 
 //utility function
