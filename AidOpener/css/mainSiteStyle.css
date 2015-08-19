@@ -414,6 +414,15 @@ li.active a, li.active a:hover {
 }
 
 
+table.inText, th, td{
+	border: 1px solid black;
+	border-collapse: collapse;
+	font-size:90%;
+	padding:10px;
+}
+
+
+
 @media screen and (max-height: 800px) { /* needs to be elaborated to cater for different screen sizes*/
     #tableBodyBlock {
         height: 360px; /*need to align this with shadowcasters */
